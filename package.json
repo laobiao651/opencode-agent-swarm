@@ -1,6 +1,6 @@
 {
   "name": "opencode-agent-swarm",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "OpenCode 多智能体编排插件 —— Task Build 主代理调度 8 个子代理协作完成复杂软件开发任务",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
