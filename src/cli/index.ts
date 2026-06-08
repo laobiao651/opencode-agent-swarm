@@ -33,37 +33,6 @@ const DEFAULT_CONFIG = {
   },
 };
 
-// ─── Step 0: Self-install ────────────────────────────────────────────
-async function installSelf(): Promise<void> {
-  const pkgName = "opencode-agent-swarm";
-  const repoUrl = "github:laobiao651/opencode-agent-swarm";
-
-  try {
-    const { execSync } = await import("node:child_process");
-    const result = execSync(`npm list -g ${pkgName} --depth=0 2>/dev/null || true`, { encoding: "utf-8" });
-    if (result.includes(pkgName)) {
-      console.log(`  ⏭️  已全局安装: ${pkgName}`);
-      return;
-    }
-  } catch {
-    // Not installed, proceed
-  }
-
-  console.log(`  📦 正在全局安装 ${pkgName}...`);
-  try {
-    const { execSync } = await import("node:child_process");
-    execSync(`npm install -g ${repoUrl}`, {
-      encoding: "utf-8",
-      stdio: "inherit",
-      timeout: 120000,
-    });
-    console.log(`  ✅ 已全局安装: ${pkgName}`);
-  } catch (err) {
-    console.warn(`  ⚠️  全局安装失败: ${String(err)}`);
-    console.warn(`     请手动运行: npm install -g ${repoUrl}`);
-  }
-}
-
 // ─── Step 1: Copy skills ──────────────────────────────────────────────
 function installSkills(): void {
   const src = resolveSkillsSrc();
@@ -136,14 +105,22 @@ function registerPlugin(): void {
     }
   }
 
-  // Ensure plugin section exists
-  if (!cfg.plugin) {
-    cfg.plugin = {};
-  }
-  (cfg.plugin as Record<string, unknown>)[CONFIG_KEY] = true;
+  const PLUGIN_ENTRY = "opencode-agent-swarm@git+https://github.com/laobiao651/opencode-agent-swarm.git";
 
-  writeFileSync(configPath, JSON.stringify(cfg, null, 2));
-  console.log("  🔌 插件已注册到 opencode.json");
+  // Ensure plugin is an array
+  if (!cfg.plugin || !Array.isArray(cfg.plugin)) {
+    cfg.plugin = [];
+  }
+  const plugins = cfg.plugin as string[];
+
+  // Only add if not already present
+  if (!plugins.includes(PLUGIN_ENTRY)) {
+    plugins.push(PLUGIN_ENTRY);
+    writeFileSync(configPath, JSON.stringify(cfg, null, 2));
+    console.log("  🔌 插件已注册到 opencode.json");
+  } else {
+    console.log("  ⏭️  插件已注册，跳过");
+  }
 }
 
 // ─── Step 4: Generate default config ──────────────────────────────────
@@ -160,13 +137,10 @@ function generateDefaultConfig(): void {
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────
-async function main(): Promise<void> {
+function main() {
   console.log("\n🚀 opencode-agent-swarm 安装程序\n");
 
   try {
-    // Step 0: Self-install globally so OpenCode can resolve the plugin
-    await installSelf();
-
     // Existing steps
     installSkills();
     installPrompts();

@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 const REPO = "laobiao651/opencode-agent-swarm";
-const CURRENT_VERSION = "1.1.1";
+const CURRENT_VERSION = "1.1.2";
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 async function getLatestVersion(): Promise<string | null> {
