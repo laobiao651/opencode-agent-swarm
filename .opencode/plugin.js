@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, "..");
 const OPENCODE_DIR = join(homedir(), ".config", "opencode");
 const CACHE_FILE = join(OPENCODE_DIR, ".agent-swarm-update");
-const CHECK_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours
+const CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 6 hours
 
 const DEFAULT_MODELS = {
   "task-build":      { model: "opencode-go/deepseek-v4-pro" },
