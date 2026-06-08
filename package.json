@@ -1,37 +1,16 @@
 {
   "name": "opencode-agent-swarm",
   "version": "2.0.0",
-  "description": "OpenCode \u591a\u667a\u80fd\u4f53\u7f16\u6392\u63d2\u4ef6 \u2014\u2014 Task Build \u4e3b\u4ee3\u7406\u8c03\u5ea6 8 \u4e2a\u5b50\u4ee3\u7406\u534f\u4f5c\u5b8c\u6210\u590d\u6742\u8f6f\u4ef6\u5f00\u53d1\u4efb\u52a1",
-  "main": "./bin/install.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "bin": {
-    "opencode-agent-swarm": "./bin/install.js"
-  },
-  "type": "module",
+  "description": "OpenCode 多智能体编排插件 —— Task Build 主代理调度 9 智能体协作体系",
+  "main": ".opencode/plugin.js",
   "files": [
+    ".opencode/",
     "agents/",
     "skills/",
     "AGENTS.md",
-    "bin/",
-    "task-orchestration.json",
     "README.md"
   ],
-  "scripts": {},
-  "keywords": [
-    "opencode",
-    "agents",
-    "orchestration",
-    "swarm",
-    "task-build",
-    "multi-agent"
-  ],
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  "keywords": ["opencode", "agents", "orchestration"],
+  "type": "module",
+  "license": "MIT"
 }
