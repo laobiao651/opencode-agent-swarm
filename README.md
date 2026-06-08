@@ -18,14 +18,76 @@ OpenCode 多智能体编排插件 —— 基于 Task Build 主代理调度的 9 
 
 ## 安装
 
-```bash
-# 需要 Node.js ≥ 18 或 Bun
-npx opencode-agent-swarm
+### 前置条件
+
+- [OpenCode](https://opencode.ai) 已安装
+- Node.js ≥ 18
+
+### 步骤 1：注册插件
+
+编辑 `~/.config/opencode/opencode.json`，在 `plugin` 字段中添加：
+
+```jsonc
+{
+  "plugin": {
+    "opencode-agent-swarm": "github:laobiao651/opencode-agent-swarm"
+  }
+}
 ```
 
-安装后 OpenCode 会自动加载插件，`task-build` 成为默认 agent。
+OpenCode 每次启动时会自动从 GitHub 拉取插件、安装依赖并构建。`task-build` 将自动设为默认 agent。
 
-## 模型配置
+### 步骤 2：初始化提示词和配置
+
+注册插件只加载 agent 逻辑，提示词文件和技能还需要安装到本地：
+
+```bash
+npx github:laobiao651/opencode-agent-swarm
+```
+
+CLI 安装器会自动完成：
+- 拷贝 10 个提示词文件到 `~/.config/opencode/prompts/`（支持用户直接编辑微调）
+- 拷贝 `modular-reuse-design` 技能到 `~/.config/opencode/skills/`
+- 生成默认模型配置 `~/.config/opencode/task-orchestration.json`
+- 注册插件到 `opencode.json`（如果步骤 1 未手动执行）
+
+### 验证安装
+
+启动 OpenCode 后，输入以下命令确认 9 个 agent 在线：
+
+```
+@task-build 列出你可调度的所有子代理
+```
+
+或直接开始使用：
+
+```
+帮我重构 src/auth 模块
+```
+
+## 提示词与升级
+
+所有 agent 的提示词以 `.md` 文件存放在 `~/.config/opencode/prompts/`：
+
+```
+~/.config/opencode/prompts/
+├── _global.md          ← 全局规则
+├── task-build.md       ← 主代理提示词
+├── code-fix.md
+├── code-full.md
+├── planner.md
+├── reviewer.md
+├── librarian.md
+├── browser-agent.md
+├── bug-diagnoser.md
+└── ui-designer.md
+```
+
+**直接编辑这些文件即可自定义任何 agent 的行为**，无需修改源码。
+
+升级时运行 `npx github:laobiao651/opencode-agent-swarm`，已修改的提示词不会被覆盖，但会生成 `.md.default` 文件供你对比最新版本。
+
+## 模型配置（可选，不配置则用默认模型）
 
 编辑 `~/.config/opencode/task-orchestration.json`：
 
