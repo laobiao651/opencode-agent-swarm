@@ -23,21 +23,7 @@ OpenCode 多智能体编排插件 —— 基于 Task Build 主代理调度的 9 
 - [OpenCode](https://opencode.ai) 已安装
 - Node.js ≥ 18
 
-### 方法一：CLI 一键安装（推荐）
-
-```bash
-npx github:laobiao651/opencode-agent-swarm
-```
-
-CLI 会自动完成：
-1. 注册插件到 `~/.config/opencode/opencode.json`（格式: `opencode-agent-swarm@git+https://github.com/...`）
-2. 拷贝 10 个提示词文件到 `~/.config/opencode/prompts/`
-3. 拷贝 `modular-reuse-design` 技能到 `~/.config/opencode/skills/`
-4. 生成默认模型配置 `~/.config/opencode/task-orchestration.json`
-
-OpenCode 下次启动时自动从 GitHub 拉取插件、安装依赖、构建并加载。`task-build` 成为默认 agent。
-
-### 方法二：手动注册
+### 安装步骤
 
 编辑 `~/.config/opencode/opencode.json`，在 `plugin` 数组中添加：
 
@@ -49,11 +35,12 @@ OpenCode 下次启动时自动从 GitHub 拉取插件、安装依赖、构建并
 }
 ```
 
-然后运行 CLI 安装提示词和配置：
+启动 OpenCode。首次加载时插件会自动完成：
+1. 拷贝提示词文件到 `~/.config/opencode/prompts/`
+2. 拷贝技能到 `~/.config/opencode/skills/`
+3. 生成默认模型配置 `~/.config/opencode/task-orchestration.json`
 
-```bash
-npx github:laobiao651/opencode-agent-swarm
-```
+`task-build` 自动成为默认 agent。
 
 ### 验证安装
 

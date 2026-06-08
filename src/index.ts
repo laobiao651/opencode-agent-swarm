@@ -1,12 +1,13 @@
 import type { Plugin } from "@opencode-ai/plugin";
 import { createAgents, getAgentConfigs } from "./agents";
 import { loadConfig } from "./config/loader";
-import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, existsSync, writeFileSync, mkdirSync, cpSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { homedir } from "node:os";
+import { fileURLToPath } from "node:url";
 
 const REPO = "laobiao651/opencode-agent-swarm";
-const CURRENT_VERSION = "1.1.2";
+const CURRENT_VERSION = "1.2.0";
 const CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
 
 async function getLatestVersion(): Promise<string | null> {
@@ -63,7 +64,75 @@ async function checkForUpdate(): Promise<{
   };
 }
 
+// ─── Resolve package root ─────────────────────────────────────────────
+function getPackageRoot(): string {
+  try {
+    return join(dirname(fileURLToPath(import.meta.url)), "..");
+  } catch {
+    return process.cwd();
+  }
+}
+
 const AGENT_SWARM: Plugin = async (_ctx) => {
+  // ─── Auto-install on first load ───────────────────────────────────────
+  const PKG_ROOT = getPackageRoot();
+  const OPENCODE_DIR = join(homedir(), ".config", "opencode");
+
+  // 1. Install prompts (only if ~/.config/opencode/prompts/ is empty or missing)
+  const promptsSrc = join(PKG_ROOT, "assets", "prompts");
+  const promptsDest = join(OPENCODE_DIR, "prompts");
+  if (existsSync(promptsSrc)) {
+    mkdirSync(promptsDest, { recursive: true });
+    const srcFiles = readdirSync(promptsSrc);
+    // Only copy if destination is empty (first install)
+    const destFiles = existsSync(promptsDest) ? readdirSync(promptsDest).filter(f => f.endsWith('.md')) : [];
+    if (destFiles.length === 0) {
+      for (const f of srcFiles) {
+        cpSync(join(promptsSrc, f), join(promptsDest, f));
+      }
+      console.error(`[opencode-agent-swarm] ✅ 已安装 ${srcFiles.length} 个提示词到 ~/.config/opencode/prompts/`);
+    }
+  }
+
+  // 2. Install skill
+  const skillsSrc = join(PKG_ROOT, "src", "skills");
+  const skillsDest = join(OPENCODE_DIR, "skills");
+  if (existsSync(skillsSrc)) {
+    mkdirSync(skillsDest, { recursive: true });
+    const skillDirs = readdirSync(skillsSrc, { withFileTypes: true }).filter(e => e.isDirectory());
+    for (const dir of skillDirs) {
+      const destDir = join(skillsDest, dir.name);
+      if (!existsSync(destDir)) {
+        cpSync(join(skillsSrc, dir.name), destDir, { recursive: true });
+        console.error(`[opencode-agent-swarm] ✅ 已安装技能: skills/${dir.name}`);
+      }
+    }
+  }
+
+  // 3. Generate default model config
+  const configPath = join(OPENCODE_DIR, "task-orchestration.json");
+  if (!existsSync(configPath)) {
+    const defaultConfig = {
+      agents: {
+        "task-build":      { "model": "opencode-go/deepseek-v4-pro" },
+        "code-fix":        { "model": "google-agy/gemini-3.5-flash" },
+        "code-full":       { "model": "google/gemini-3-flash-preview" },
+        "planner":         { "model": "google-agy/gemini-3.1-pro-low" },
+        "reviewer":        { "model": "google/gemini-3.1-pro-preview" },
+        "librarian":       { "model": "opencode/deepseek-v4-flash-free" },
+        "browser-agent":   { "model": "google/gemini-3-flash-preview" },
+        "bug-diagnoser":   { "model": "google/gemini-3.1-pro-preview" },
+        "ui-designer":     { "model": "google-agy/gemini-3.5-flash" },
+      },
+    };
+    try {
+      writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
+      console.error(`[opencode-agent-swarm] ✅ 已生成默认配置: ~/.config/opencode/task-orchestration.json`);
+    } catch (err) {
+      console.error(`[opencode-agent-swarm] ⚠️ 生成配置失败: ${String(err)}`);
+    }
+  }
+
   const config = loadConfig();
   const agentDefs = createAgents(config);
   const agents = getAgentConfigs(agentDefs);
