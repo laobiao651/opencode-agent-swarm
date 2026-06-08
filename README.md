@@ -23,6 +23,25 @@ OpenCode 多智能体编排插件 —— Task Build 主代理调度 9 个子代�
 | **bug-diagnoser** | Bug 诊断代理。系统性排查、复现、二分定位、输出诊断报告（不修代码） | `google/gemini-3.1-pro-preview` |
 | **ui-designer** | UI/UX 代理。布局、CSS、响应式、动效、无障碍优化 | `google-agy/gemini-3.5-flash` |
 
+## 推荐模型
+
+不同 agent 对模型能力有不同要求：
+
+| Agent | 推荐模型 | 说明 |
+|---|---|---|
+| **task-build**（主代理） | Claude Opus、ChatGPT 5.4+ | 调度中枢，需要最强推理和规划能力 |
+| **reviewer** | Claude Sonnet 系列 | 代码审查，需要精准理解 |
+| **planner** | ChatGPT 5.2+ 系列 | 结构化计划拆解 |
+| **code-fix** | 自由搭配 | 轻量修复，Flash 级即可 |
+| **code-full** | 自由搭配 | 复杂实现，建议 Sonnet/GPT-5 级 |
+| **librarian** | 自由搭配 | 知识查询，轻量模型即可 |
+| **browser-agent** | 自由搭配 | 浏览器操作，Flash 级即可 |
+| **bug-diagnoser** | 自由搭配 | 需要深层推理，建议 Sonnet 级 |
+| **ui-designer** | 自由搭配 | 视觉设计 |
+
+> 原则：主代理用最强，审查用 Sonnet，规划用 Codex，其它按预算自由搭配。
+
+
 ## 安装
 
 在 `~/.config/opencode/opencode.json` 的 `plugin` 数组中添加：
