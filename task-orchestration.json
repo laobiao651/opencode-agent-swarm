@@ -1,0 +1,31 @@
+{
+  "agents": {
+    "task-build": {
+      "model": "opencode-go/deepseek-v4-pro"
+    },
+    "code-fix": {
+      "model": "google-agy/gemini-3.5-flash"
+    },
+    "code-full": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "planner": {
+      "model": "google-agy/gemini-3.1-pro-low"
+    },
+    "reviewer": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
+    "librarian": {
+      "model": "opencode/deepseek-v4-flash-free"
+    },
+    "browser-agent": {
+      "model": "google/gemini-3-flash-preview"
+    },
+    "bug-diagnoser": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
+    "ui-designer": {
+      "model": "google-agy/gemini-3.5-flash"
+    }
+  }
+}
