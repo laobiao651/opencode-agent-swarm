@@ -87,6 +87,17 @@ CLI 安装器会自动完成：
 
 升级时运行 `npx github:laobiao651/opencode-agent-swarm`，已修改的提示词不会被覆盖，但会生成 `.md.default` 文件供你对比最新版本。
 
+## 内置命令
+
+在 OpenCode 中直接使用：
+
+| 命令 | 说明 |
+|---|---|
+| `/setup-swarm` | 一键安装/更新提示词、技能和配置文件到本地 |
+| `/swarm-update` | 清除插件缓存并升级到最新版本 |
+
+当新版本发布时，OpenCode 启动会自动提示更新。
+
 ## 模型配置（可选，不配置则用默认模型）
 
 编辑 `~/.config/opencode/task-orchestration.json`：
