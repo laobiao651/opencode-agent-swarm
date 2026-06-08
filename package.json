@@ -21,6 +21,7 @@
     "README.md"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "build": "npx esbuild src/index.ts src/cli/index.ts --bundle --platform=node --format=esm --outdir=dist --external:@opencode-ai/plugin",
     "typecheck": "tsc --noEmit"
   },
