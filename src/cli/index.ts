@@ -33,6 +33,37 @@ const DEFAULT_CONFIG = {
   },
 };
 
+// ─── Step 0: Self-install ────────────────────────────────────────────
+async function installSelf(): Promise<void> {
+  const pkgName = "opencode-agent-swarm";
+  const repoUrl = "github:laobiao651/opencode-agent-swarm";
+
+  try {
+    const { execSync } = await import("node:child_process");
+    const result = execSync(`npm list -g ${pkgName} --depth=0 2>/dev/null || true`, { encoding: "utf-8" });
+    if (result.includes(pkgName)) {
+      console.log(`  ⏭️  已全局安装: ${pkgName}`);
+      return;
+    }
+  } catch {
+    // Not installed, proceed
+  }
+
+  console.log(`  📦 正在全局安装 ${pkgName}...`);
+  try {
+    const { execSync } = await import("node:child_process");
+    execSync(`npm install -g ${repoUrl}`, {
+      encoding: "utf-8",
+      stdio: "inherit",
+      timeout: 120000,
+    });
+    console.log(`  ✅ 已全局安装: ${pkgName}`);
+  } catch (err) {
+    console.warn(`  ⚠️  全局安装失败: ${String(err)}`);
+    console.warn(`     请手动运行: npm install -g ${repoUrl}`);
+  }
+}
+
 // ─── Step 1: Copy skills ──────────────────────────────────────────────
 function installSkills(): void {
   const src = resolveSkillsSrc();
@@ -129,10 +160,14 @@ function generateDefaultConfig(): void {
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────
-function main(): void {
+async function main(): Promise<void> {
   console.log("\n🚀 opencode-agent-swarm 安装程序\n");
 
   try {
+    // Step 0: Self-install globally so OpenCode can resolve the plugin
+    await installSelf();
+
+    // Existing steps
     installSkills();
     installPrompts();
     registerPlugin();
@@ -143,8 +178,9 @@ function main(): void {
   }
 
   console.log("\n✅ 安装完成！");
-  console.log("   配置文件: ~/.config/opencode/task-orchestration.json");
-  console.log("   编辑该文件即可为每个 agent 切换模型。\n");
+  console.log("   提示词目录: ~/.config/opencode/prompts/");
+  console.log("   模型配置:   ~/.config/opencode/task-orchestration.json");
+  console.log("   OpenCode 下次启动时 task-build 将成为默认 agent。\n");
 }
 
 main();
