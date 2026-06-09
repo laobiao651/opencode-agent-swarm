@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, "..");
 const OPENCODE_DIR = join(homedir(), ".config", "opencode");
 const CACHE_FILE = join(OPENCODE_DIR, ".agent-swarm-update");
-const CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 6 hours
+const CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
 const DEFAULT_MODELS = {
   "task-build":      { model: "opencode-go/deepseek-v4-pro" },
@@ -54,12 +54,12 @@ async function checkUpdate() {
 
   try {
     const res = await fetch(
-      "https://api.github.com/repos/laobiao651/opencode-agent-swarm/releases/latest",
-      { headers: { Accept: "application/vnd.github+json" } }
+      "https://registry.npmjs.org/opencode-agent-swarm/latest",
+      { headers: { Accept: "application/json" } }
     );
     if (!res.ok) return null;
     const data = await res.json();
-    const latest = data.tag_name?.replace(/^v/, "");
+    const latest = data.version;
     const result = { latest, time: Date.now() };
     try { writeFileSync(CACHE_FILE, JSON.stringify(result)); } catch {}
     return result;
