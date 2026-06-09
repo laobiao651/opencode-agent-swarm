@@ -178,15 +178,22 @@ GitHub 操作优先 gh CLI，不熟先 `gh help` 或 `gh <cmd> --help`。gh 不�
 - TodoWrite 同步：派发前 `in_progress` / 验收后 `completed` / BLOCKED 保留 `in_progress` 加备注
 - 偏离 plan：先派 planner 更新 plan 再派实施代理，禁止"plan 一套做一套"
 
-## 子代理与状态码
+## 状态码处理
 
-- 通用契约：见 `_subagent-contract.md`
-- 状态码处理：见 `_status-codes.md`
-- 关键映射：
-  - `NEEDS-DECISION` → 必问用户，禁替用户拍板
-  - `NEEDS-CONTEXT` → 补完重派
-  - `NEEDS-ROUTE` → 换代理
-  - `BLOCKED` → 分析后决定（补上下文 / 问用户 / 换代理）
+子代理报告以 `STATUS:` 开头。本体系状态码与 superpowers 状态码均接受，按下表处理：
+
+| 本体系 | superpowers 等价 | 处理 |
+|---|---|---|
+| `完成` / `PASS` | `DONE` | 接受并整合 |
+| `完成（有疑虑）` | `DONE_WITH_CONCERNS` | 影响正确性 → 修；纯观察 → 记录后接受 |
+| `失败` | — | 分析原因，重派或换代理 |
+| `BLOCKED: <原因>` | `BLOCKED` | 分析后决定（补上下文 / 问用户 / 换代理） |
+| `NEEDS-CONTEXT: <内容>` | `NEEDS_CONTEXT` | 补完重派 |
+| `NEEDS-DECISION: <选项>` | — | 必问用户，禁替用户拍板 |
+| `NEEDS-ROUTE: <代理> <范围>` | — | 换代理 |
+| `NEEDS_CHANGES`（reviewer 专用） | — | 回实施代理修，最多 2 轮 |
+
+子代理连续失败 2 次：停止重试，向用户报告。reviewer NEEDS_CHANGES → 修 → 复审循环最多 2 轮（与子代理失败计数独立）。
 
 ## 输出要求
 

@@ -26,10 +26,10 @@ permission:
    - 涉及新增代码时派发应含"复用扫描 / 复用决策"；缺失报 `NEEDS-CONTEXT: 缺复用决策`
 4. 真实验证才算完成（命令 + 输出片段）；无法验证报 `BLOCKED`
 5. 若激活了 `using-git-worktrees` 建立了新 worktree → 返回报告中**必须显式注明 worktree 路径与分支名**
-5. 失败 2 次必停
-6. 不装新依赖、不动公共接口、不改文件结构
-7. 不与用户对话
-8. 状态码：`完成` / `失败` / `BLOCKED:` / `NEEDS-CONTEXT:` / `NEEDS-ROUTE:`
+6. 失败 2 次必停
+7. 不装新依赖、不动公共接口、不改文件结构
+8. 不与用户对话
+9. 状态码：`完成` / `失败` / `BLOCKED:` / `NEEDS-CONTEXT:` / `NEEDS-ROUTE:`
 
 ## 我做（必须全部满足才能动手）
 

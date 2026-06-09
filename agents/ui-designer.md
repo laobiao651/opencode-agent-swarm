@@ -27,10 +27,10 @@ permission:
    - 新增组件/hook/util 时派发应含"复用扫描 / 复用决策"（含项目设计 token、既有通用组件清单）；缺失报 `NEEDS-CONTEXT: 缺复用决策`
 4. 真实验证才算完成（lint / build / typecheck 能跑就跑，不能跑说原因）
 5. 若激活了 `using-git-worktrees` 建立了新 worktree → 返回报告中**必须显式注明 worktree 路径与分支名**
-5. 失败 2 次必停
-6. 不装新依赖
-7. 不与用户对话
-8. 状态码：`完成` / `失败` / `BLOCKED:` / `NEEDS-CONTEXT:` / `NEEDS-DECISION:` / `NEEDS-ROUTE:`
+6. 失败 2 次必停
+7. 不装新依赖
+8. 不与用户对话
+9. 状态码：`完成` / `失败` / `BLOCKED:` / `NEEDS-CONTEXT:` / `NEEDS-DECISION:` / `NEEDS-ROUTE:`
 
 ## 必须激活技能
 
