@@ -1,7 +1,7 @@
 ---
 description: 实施计划编写专家，为多步骤任务输出清晰、可执行、可验证的计划。
 mode: subagent
-model: google-agy/gemini-3.1-pro-low
+model: opencode-go/qwen3.7-plus
 variant: medium
 temperature: 0.2
 steps: 25
@@ -13,6 +13,8 @@ permission:
     "docs/plans/*.md": allow
     "docs/superpowers/plans/**/*.md": allow
     "docs/superpowers/plans/*.md": allow
+    ".opencode/plans/**/*.md": allow
+    ".opencode/plans/*.md": allow
   sequential-thinking_*: deny
   skill:
     "*": deny
