@@ -28,8 +28,12 @@ function copyDir(src, dst) {
     const d = join(dst, entry.name);
     if (entry.isDirectory()) {
       copyDir(s, d);
-    } else if (!existsSync(d)) {
-      cpSync(s, d);
+    } else {
+      // Overwrite if not exists or content differs
+      const srcContent = readFileSync(s);
+      if (!existsSync(d) || !srcContent.equals(readFileSync(d))) {
+        cpSync(s, d);
+      }
     }
   }
 }
